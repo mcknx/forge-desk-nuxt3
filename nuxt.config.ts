@@ -1,4 +1,6 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
+import { fileURLToPath } from 'node:url'
+
 export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
   devtools: { enabled: true },
@@ -24,7 +26,14 @@ export default defineNuxtConfig({
   nitro: {
     // Exposes server/db/*.sql to useStorage('assets:db') so schema.sql has one
     // definition instead of a copy pasted into a TS string.
-    serverAssets: [{ baseName: 'db', dir: './server/db' }],
+    //
+    // Absolute, not './server/db': Nitro resolves this relative to its own
+    // srcDir, which under Nuxt is <root>/server — so the relative form pointed
+    // at <root>/server/server/db, silently bundled nothing, and the Postgres
+    // driver failed on its first ever real connection with "schema.sql not
+    // found in server assets". It fell back to the memory driver, so the app
+    // still served; only /api/health revealed it.
+    serverAssets: [{ baseName: 'db', dir: fileURLToPath(new URL('./server/db', import.meta.url)) }],
   },
 
   hooks: {

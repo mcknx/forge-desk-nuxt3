@@ -74,7 +74,12 @@ const toInvoice = (r: Row): Invoice => ({
   issuedOn: isoDay(r.issued_on),
   dueOn: isoDay(r.due_on),
   currency: r.currency,
-  lines: r.lines ?? [],
+  // Writes go through sql.json(), so this column holds a jsonb array and
+  // postgres.js hands it back parsed. The string branch reads rows written by
+  // an earlier version that did `${JSON.stringify(lines)}::jsonb` — that
+  // double-encoded, storing a jsonb *string*, and `v-for` over a string
+  // iterates characters, so the invoice page rendered one row per character.
+  lines: typeof r.lines === 'string' ? JSON.parse(r.lines) : (r.lines ?? []),
   subtotalMinor: Number(r.subtotal_minor),
   taxRateBp: Number(r.tax_rate_bp),
   taxMinor: Number(r.tax_minor),
@@ -322,7 +327,7 @@ export async function createPostgresRepo(url: string): Promise<Repo> {
             VALUES (${id}, ${input.clientId},
                     ${nextInvoiceNumber(existing as any, Number(input.issuedOn.slice(0, 4)))},
                     'draft', ${input.issuedOn}, ${input.dueOn}, ${client.currency},
-                    ${JSON.stringify(lines)}::jsonb,
+                    ${tx.json(lines as never)},
                     ${totals.subtotalMinor}, ${input.taxRateBp}, ${totals.taxMinor}, ${totals.totalMinor})
             RETURNING *
           `
@@ -414,7 +419,7 @@ async function seedIfEmpty(sql: postgres.Sql) {
       await tx`INSERT INTO invoices (id, client_id, number, status, issued_on, due_on, currency, lines,
                                      subtotal_minor, tax_rate_bp, tax_minor, total_minor, created_at)
                VALUES (${i.id}, ${i.clientId}, ${i.number}, ${i.status}, ${i.issuedOn}, ${i.dueOn}, ${i.currency},
-                       ${JSON.stringify(i.lines)}::jsonb, ${i.subtotalMinor}, ${i.taxRateBp}, ${i.taxMinor},
+                       ${tx.json(i.lines as never)}, ${i.subtotalMinor}, ${i.taxRateBp}, ${i.taxMinor},
                        ${i.totalMinor}, ${i.createdAt})`
     }
     for (const e of s.timeEntries) {
