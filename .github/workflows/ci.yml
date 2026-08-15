@@ -1,0 +1,59 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+# There is deliberately no postgres service here. DATABASE_URL is left unset, so
+# every step runs against the in-process memory driver — the same fallback the
+# public demo uses when no database is attached. That keeps CI in seconds rather
+# than minutes and makes the fallback a tested surface instead of an untested
+# claim. The trade-off is real and written down in docs/adr/008-no-database-in-ci.md:
+# the SQL in server/utils/repo-postgres.ts is NOT exercised here.
+env:
+  SESSION_SECRET: forge-desk-ci-secret
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      - name: Contract, translation and seed check
+        run: npm run check
+
+      - name: Types
+        run: npm run typecheck
+
+      - name: Unit tests
+        run: npm run test
+
+      - name: Build
+        run: npm run build
+
+      - name: Install Playwright chromium
+        run: npx playwright install --with-deps chromium
+
+      # playwright.config.ts owns the server lifecycle, so this rebuilds and
+      # boots .output itself rather than depending on the step above.
+      - name: End-to-end and accessibility tests
+        run: npm run test:e2e
+
+      - name: Upload Playwright report
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 7
