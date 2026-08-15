@@ -18,11 +18,13 @@ logs
 .fleet
 .idea
 
-# Local env files
+# Local env files. The negation has to come last — git takes the final matching
+# pattern, so an `.env*` line after it silently re-ignored the example file and
+# kept it out of the public repo.
 .env
 .env.*
-!.env.example
 .env*
+!.env.example
 
 # Vercel project link (contains the project/org ids, not secrets, but it is
 # machine-local state rather than source)

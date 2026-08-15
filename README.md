@@ -23,7 +23,7 @@ in a banner. `.env.example` documents what each variable changes.
 
 ## Architecture
 
-Nuxt 3.15 (SSR) · Nitro API · Pinia · Tailwind · zod · vue-i18n · TypeScript strict.
+Nuxt 3.17 (SSR) · Nitro API · Pinia · Tailwind · zod · vue-i18n · TypeScript strict.
 
 **One domain model.** `types/domain.ts` defines what a client, task, time entry and invoice are. `server/db/schema.sql`,
 `server/utils/schema.ts` and the Dart models in the Flutter companion all answer to it.
@@ -68,8 +68,8 @@ and the read-only account is refused by the server rather than only by a hidden 
 without alt text, more or fewer than one `h1`, skipped heading levels and a skip link that is not the first tab stop —
 then drives the command palette and a modal entirely on the keyboard.
 
-CI (`.github/workflows/ci.yml`) runs all of it on Node 20 with no database service, so the memory driver's correctness
-is a tested claim rather than an asserted one.
+CI (`.github/workflows/ci.yml`) runs all of it on Node 20 with no database service, so the memory driver's
+correctness is a tested claim rather than an asserted one.
 
 ## Accessibility and performance
 
@@ -133,6 +133,6 @@ docs/adr/                  eight decision records
 
 ## Related
 
-- Nuxt 2 legacy slice: [forge-desk-nuxt2](https://github.com/mcknx/forge-desk-nuxt2) — the same screens before the migration
+- Nuxt 2 legacy slice: `../forge-desk-nuxt2/` — the same screens before the migration
 - Migration notes: `MIGRATION.md`
-- Flutter companion: [forge-desk-flutter](https://github.com/mcknx/forge-desk-flutter)
+- Flutter companion: `../forge-desk-flutter/`

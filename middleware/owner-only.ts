@@ -10,7 +10,7 @@ export default defineNuxtRouteMiddleware(async (to) => {
 
   if (!isOwner.value) {
     // Client-side only. A full page load is already refused by
-    // server/middleware/owner-routes.ts with a real 403 — doing it here too
+    // server/middleware/2.owner-routes.ts with a real 403 — doing it here too
     // would mean throwing from async route middleware, which Nuxt flattens
     // into a 500 and would make the status *worse*. This half covers the case
     // the server never sees: an in-app link click.

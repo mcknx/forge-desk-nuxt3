@@ -2,7 +2,7 @@
 
 Forge Desk exists twice, over one fixture, on purpose.
 
-- **[forge-desk-nuxt2](https://github.com/mcknx/forge-desk-nuxt2)** — the legacy console. Options API, `asyncData`, `fetch()`, Vuex with a
+- **`../forge-desk-nuxt2`** — the legacy console. Options API, `asyncData`, `fetch()`, Vuex with a
   namespaced module, `Vue.filter`, `head()`, `_id.vue` routing, `target: 'static'`. No server.
 - **`.` (`forge-desk-nuxt3`)** — the same product. `<script setup>`, `useFetch`/`useAsyncData`/`$fetch`,
   Pinia setup stores, `useSeoMeta`, `[id].vue` routing, a Nitro API, Postgres or an in-process driver.
@@ -67,8 +67,8 @@ Every snippet below is lifted from those two repos with its real path. Nothing h
 | 46 | Aliases | `~/lib/data` | `~~/types/domain` |
 | 47 | Build output | `nuxt generate` → `dist/` | `nuxt build` → `.output/` |
 
-Sizes, for scale: the Nuxt 2 app is **2,296 lines** across 6 pages, 2 layouts, 2 Vuex files, 1 plugin,
-1 middleware. The Nuxt 3 app is **9,376 lines** across 14 pages, 23 components, 5 composables, 2 Pinia
+Sizes, for scale: the Nuxt 2 app is **2,846 lines** across 6 pages, 2 layouts, 2 Vuex files, 1 plugin,
+1 middleware. The Nuxt 3 app is **10,113 lines** across 14 pages, 23 components, 5 composables, 2 Pinia
 stores, 27 API handlers, 121 unit tests and 17 Playwright cases.
 
 ---
@@ -355,7 +355,7 @@ bundled fixture synchronously:
 ```js
 /**
  * Data access layer over the bundled fixture. This is the Nuxt 2 stand-in for
- * the Nitro routes in server/api of the Nuxt 3 repo: same query options, same
+ * the Nitro routes in ../forge-desk-nuxt3/server/api: same query options, same
  * filter/sort semantics, same { items, total, page, perPage, pages } envelope.
  */
 export function listClients(query) {

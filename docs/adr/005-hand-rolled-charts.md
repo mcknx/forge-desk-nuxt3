@@ -12,7 +12,9 @@ bundle whose entire point is being fast.
 
 Two components, `SparkBars.vue` and `DonutChart.vue`, drawing inline SVG. Bars are `<rect>` with a height
 proportional to the max; the donut is `stroke-dasharray` arithmetic on concentric `<circle>` elements.
-Together they are well under a hundred lines and add nothing to `package.json`.
+Together they are 152 lines — 70 and 82 — and add nothing to `package.json`. That is more code than a
+config object for a library would have been; it is also the entire cost, with no dependency to keep
+current behind it.
 
 Both carry `role="img"` and an `aria-label` stating the actual numbers. An SVG chart with no accessible
 name is invisible to a screen reader, which makes it decoration rather than information.

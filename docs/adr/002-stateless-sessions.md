@@ -11,7 +11,10 @@ including the ones that would otherwise be cached.
 ## Decision
 
 The session cookie carries `userId.expiresAt.hmac`, signed with `SESSION_SECRET` using HMAC-SHA256.
-`server/middleware/session.ts` verifies the signature, checks expiry, and loads the user.
+`server/middleware/1.session.ts` verifies the signature, checks expiry, and loads the user. The numeric
+prefix is load-bearing rather than decorative: Nitro runs server middleware in alphabetical order, so
+before the rename the owner guard sorted ahead of the session resolver and every authenticated request
+looked anonymous to it.
 
 Signature comparison uses `timingSafeEqual`, with a length check first because `timingSafeEqual` throws
 on mismatched lengths — and the throw would itself leak the length.

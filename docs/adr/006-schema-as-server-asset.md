@@ -17,11 +17,19 @@
 Declare the directory as a Nitro server asset:
 
 ```ts
-nitro: { serverAssets: [{ baseName: 'db', dir: './server/db' }] }
+nitro: {
+  serverAssets: [
+    { baseName: 'db', dir: fileURLToPath(new URL('./server/db', import.meta.url)) }
+  ]
+}
 ```
 
 and read it with `useStorage('assets:db').getItem('schema.sql')`. Nitro bundles the file, the SQL stays
 in a `.sql` file with syntax highlighting, and there is exactly one copy.
+
+The path has to be absolute. The obvious `dir: './server/db'` resolves against Nitro's own srcDir, which
+under Nuxt is `<root>/server` — so it looked in `<root>/server/server/db`, found nothing, and bundled no
+SQL, without warning at build time. That shipped, and the failure is written up in ADR 008.
 
 The DDL is idempotent — `CREATE TABLE IF NOT EXISTS`, `CREATE INDEX IF NOT EXISTS` — so applying it on
 cold start converges instead of needing a separate migration runner.

@@ -57,6 +57,15 @@ against one typed domain model.
 - **The auth guard ran before sessions existed.** Nitro orders server middleware alphabetically, so the guard
   executed before the session resolver had populated the context and every authenticated request looked
   anonymous. Fixed by numbering the files `1.session.ts` and `2.owner-routes.ts`.
+- **The Postgres driver could never find its schema.** `nitro.serverAssets` declared `dir: './server/db'`.
+  Nitro resolves that against its own srcDir — `<root>/server` under Nuxt — so it looked in
+  `<root>/server/server/db`, bundled no SQL, and `applySchema()` threw "schema.sql not found in server
+  assets" on the first real connection. The build gave no warning. Fixed with an absolute path,
+  `fileURLToPath(new URL('./server/db', import.meta.url))`. (ADR 006, ADR 008)
+- **An invoice rendered 123 rows of single characters.** Writes used `${JSON.stringify(lines)}::jsonb`, but
+  postgres.js already JSON-encodes its parameters, so the column held a jsonb *string* rather than an array.
+  `v-for="line in invoice.lines"` then iterated the string one character at a time. Fixed by passing
+  `sql.json(lines)`, with a parse fallback in `toInvoice` for rows written before the fix. (ADR 008)
 
 ### Security
 
