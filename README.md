@@ -1,5 +1,7 @@
 # Forge Desk
 
+[![CI](https://github.com/mcknx/forge-desk-nuxt3/actions/workflows/ci.yml/badge.svg)](https://github.com/mcknx/forge-desk-nuxt3/actions/workflows/ci.yml)
+
 A freelance operations desk — clients, tasks, timesheets, invoices — behind one typed domain model, served
 to a Nuxt 3 app, a Nuxt 2 legacy slice and a Flutter companion.
 
@@ -66,7 +68,7 @@ and the read-only account is refused by the server rather than only by a hidden 
 without alt text, more or fewer than one `h1`, skipped heading levels and a skip link that is not the first tab stop —
 then drives the command palette and a modal entirely on the keyboard.
 
-CI (`.github/workflows/forge-desk.yml`, at the repo root — GitHub only reads workflows from there) runs all of it on Node 20 with no database service, so the memory driver's correctness
+CI (`.github/workflows/ci.yml`) runs all of it on Node 20 with no database service, so the memory driver's correctness
 is a tested claim rather than an asserted one.
 
 ## Accessibility and performance
@@ -109,7 +111,9 @@ server/
   utils/repo-postgres.ts   Postgres driver
   utils/auth.ts            scrypt + signed session cookies
   utils/guard.ts           requireUser / requireWriter / readValid / rateLimit
-  middleware/session.ts    resolves the cookie into event.context.user
+  middleware/1.session.ts  resolves the cookie into event.context.user
+  middleware/2.owner-routes.ts  403s a viewer on owner-only pages
+                           (numbered — Nitro runs these alphabetically)
   api/                     clients, tasks, time, invoices, activity, stats,
                            export, health, sitemap, demo reset, auth
   db/schema.sql            served as a Nitro asset, one definition
