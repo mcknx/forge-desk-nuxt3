@@ -1,4 +1,4 @@
-import { skipHydrate } from 'pinia'
+import { skipHydrate } from "pinia";
 
 /**
  * Fixes: every error page returns 500, whatever the real status was.
@@ -20,18 +20,18 @@ import { skipHydrate } from 'pinia'
  */
 
 // The marker symbol is not exported, so recover it by marking a probe object.
-const SKIP_SYMBOL = Object.getOwnPropertySymbols(skipHydrate({}))[0]
+const SKIP_SYMBOL = Object.getOwnPropertySymbols(skipHydrate({}))[0];
 
 export default defineNuxtPlugin({
-  name: 'forge:pinia-payload-fix',
+  name: "forge:pinia-payload-fix",
   // After @pinia/nuxt's payload plugin, or this would be the one overwritten.
-  enforce: 'post',
+  enforce: "post",
   setup() {
-    definePayloadReducer('skipHydrate', (data: unknown) => {
-      if (!data || typeof data !== 'object' || !SKIP_SYMBOL) return 0
+    definePayloadReducer("skipHydrate", (data: unknown) => {
+      if (!data || typeof data !== "object" || !SKIP_SYMBOL) return 0;
       // .call, not data.hasOwnProperty — the whole point is that the receiver
       // may not inherit from Object.prototype.
-      return Object.prototype.hasOwnProperty.call(data, SKIP_SYMBOL) ? 1 : 0
-    })
-  },
-})
+      return Object.prototype.hasOwnProperty.call(data, SKIP_SYMBOL) ? 1 : 0;
+    });
+  }
+});

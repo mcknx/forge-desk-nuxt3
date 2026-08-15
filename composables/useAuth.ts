@@ -1,9 +1,9 @@
-import type { User } from '~~/types/domain'
+import type { User } from "~~/types/domain";
 
 export function useAuth() {
   // useState, not a plain ref: the value resolved during SSR is serialised into
   // the payload, so the client boots already knowing who is signed in.
-  const user = useState<User | null>('auth:user', () => null)
+  const user = useState<User | null>("auth:user", () => null);
 
   async function refresh() {
     // The session cookie is httpOnly, so an SSR $fetch has to be handed the
@@ -17,11 +17,11 @@ export function useAuth() {
     // that into a blanket 500. It surfaced as every error page rendering 500
     // instead of its real status, because the failed request's options ride
     // along in the serialised fetch error.
-    const cookie = import.meta.server ? useRequestHeaders(['cookie']).cookie : undefined
-    const headers = cookie ? { cookie } : undefined
-    const res = await $fetch<{ user: User | null }>('/api/auth/me', { headers })
-    user.value = res.user
-    return user.value
+    const cookie = import.meta.server ? useRequestHeaders(["cookie"]).cookie : undefined;
+    const headers = cookie ? { cookie } : undefined;
+    const res = await $fetch<{ user: User | null }>("/api/auth/me", { headers });
+    user.value = res.user;
+    return user.value;
   }
 
   async function login(email: string, password: string) {
@@ -29,27 +29,27 @@ export function useAuth() {
     // flattened message. Wrapping it in `new Error(text)` threw away the status
     // code and the 422 field map, so the login form could only ever show one
     // generic string and could not highlight the offending inputs.
-    const res = await $fetch<{ user: User }>('/api/auth/login', {
-      method: 'POST',
-      body: { email, password },
-    })
-    user.value = res.user
-    return res.user
+    const res = await $fetch<{ user: User }>("/api/auth/login", {
+      method: "POST",
+      body: { email, password }
+    });
+    user.value = res.user;
+    return res.user;
   }
 
   async function logout() {
     // Clearing local state matters more than the request succeeding — a failed
     // logout that leaves the UI signed in is the worse outcome.
-    await $fetch('/api/auth/logout', { method: 'POST' }).catch(() => {})
-    user.value = null
-    await navigateTo('/login')
+    await $fetch("/api/auth/logout", { method: "POST" }).catch(() => {});
+    user.value = null;
+    await navigateTo("/login");
   }
 
   return {
     user,
-    isOwner: computed(() => user.value?.role === 'owner'),
+    isOwner: computed(() => user.value?.role === "owner"),
     login,
     logout,
-    refresh,
-  }
+    refresh
+  };
 }

@@ -1,8 +1,8 @@
-import { dirname } from 'node:path'
-import { fileURLToPath } from 'node:url'
-import { defineConfig } from 'vitest/config'
+import { dirname } from "node:path";
+import { fileURLToPath } from "node:url";
+import { defineConfig } from "vitest/config";
 
-const root = dirname(fileURLToPath(import.meta.url))
+const root = dirname(fileURLToPath(import.meta.url));
 
 /**
  * Plain vitest, not the Nuxt environment. Everything under test/ is a pure
@@ -11,11 +11,11 @@ const root = dirname(fileURLToPath(import.meta.url))
  */
 export default defineConfig({
   test: {
-    environment: 'node',
-    include: ['test/**/*.spec.ts'],
+    environment: "node",
+    include: ["test/**/*.spec.ts"]
   },
   resolve: {
     // The server code imports '~~/types/domain'; outside Nuxt nothing defines it.
-    alias: { '~~': root, '@@': root },
-  },
-})
+    alias: { "~~": root, "@@": root }
+  }
+});

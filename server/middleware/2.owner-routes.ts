@@ -14,20 +14,24 @@
  * alphabetical order, so without it this file ran before 1.session.ts and saw
  * event.context.user unset on every request — bouncing the owner to /login.
  */
-const OWNER_ONLY = [/^\/clients\/new\/?$/, /^\/clients\/[^/]+\/edit\/?$/, /^\/tasks\/new\/?$/]
+const OWNER_ONLY = [
+  /^\/clients\/new\/?$/,
+  /^\/clients\/[^/]+\/edit\/?$/,
+  /^\/tasks\/new\/?$/
+];
 
 export default defineEventHandler((event) => {
-  const path = getRequestURL(event).pathname
-  if (!OWNER_ONLY.some((pattern) => pattern.test(path))) return
+  const path = getRequestURL(event).pathname;
+  if (!OWNER_ONLY.some((pattern) => pattern.test(path))) return;
 
-  const user = event.context.user
+  const user = event.context.user;
   if (!user) {
-    return sendRedirect(event, `/login?redirect=${encodeURIComponent(path)}`, 302)
+    return sendRedirect(event, `/login?redirect=${encodeURIComponent(path)}`, 302);
   }
-  if (user.role !== 'owner') {
+  if (user.role !== "owner") {
     throw createError({
       statusCode: 403,
-      statusMessage: 'Read-only account — ask the owner to make this change',
-    })
+      statusMessage: "Read-only account — ask the owner to make this change"
+    });
   }
-})
+});
