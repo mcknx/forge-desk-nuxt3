@@ -5,7 +5,31 @@
 A freelance operations desk — clients, tasks, timesheets, invoices — behind one typed domain model, served
 to a Nuxt 3 app, a Nuxt 2 legacy slice and a Flutter companion.
 
+**What this proves:** a Nuxt 3 app with typed, zod-validated API routes, signed stateless sessions and a read-only role the server enforces, covered by 121 unit tests and 17 Playwright journeys that run against a real production build.
+
+[![Demo: the repo's own Playwright journeys: sign in, dashboard numbers, client search, create and edit a client, overdue filter, logging time, read-only account refused](docs/demo.gif)](docs/e2e-demo.mp4)
+
+15-second preview at 1.5x speed of the Playwright end-to-end run (`docs/e2e-demo.mp4`, 23 s, recorded from `npm run test:e2e` with video turned on).
+
 Live: **https://forge-desk-nuxt3.vercel.app/**
+
+**Checks, run on 16 Oct 2026 from a fresh clone** (`npm ci`, then; real output, shortened):
+
+```text
+$ npm run check
+check ok — 84 contract files, 228 translation keys, 12 clients / 48 tasks / 110 time entries / 6 invoices intact
+$ npm run test
+ Test Files  5 passed (5)
+      Tests  121 passed (121)
+$ npm run test:e2e
+  ✓  10 [chromium] › e2e/desk.spec.ts › the demo credentials sign in and the dashboard reports real numbers
+  ✓  13 [chromium] › e2e/desk.spec.ts › a client can be created, found in the list, then edited and the change sticks
+  ✓  16 [chromium] › e2e/desk.spec.ts › the read-only account sees no owner actions and is refused server-side
+  …
+  17 passed (3.7m)
+```
+
+**Caveat:** a portfolio build, not client work and not a product. With no `DATABASE_URL` it runs on the in-memory store, and tests and CI never touch Postgres (see Honest note and `docs/adr/008-no-database-in-ci.md`).
 
 Sign in and change anything. The data is a deterministic seed and there is a reset button on the dashboard.
 
